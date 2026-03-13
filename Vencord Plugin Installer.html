@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vencord Plugin Installer</title>
+<meta name="description" content="Easily install custom plugins for Vencord with step-by-step guided commands.">
+
+<!-- Fonts -->
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* === DESIGN TOKENS === */
+:root {
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+  --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+
+  --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;    --space-5: 1.25rem; --space-6: 1.5rem;
+  --space-8: 2rem;    --space-10: 2.5rem; --space-12: 3rem;
+  --space-16: 4rem;   --space-20: 5rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-display: 'Cabinet Grotesk', 'General Sans', system-ui, sans-serif;
+  --font-body: 'General Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Discord-inspired palette: dark indigo + blurple */
+  --color-bg:            #0e0f14;
+  --color-surface:       #13141b;
+  --color-surface-2:     #191a23;
+  --color-surface-3:     #1e2030;
+  --color-border:        #2a2c3d;
+  --color-border-bright: #3a3d54;
+  --color-divider:       #232538;
+
+  --color-text:          #e4e5f0;
+  --color-text-muted:    #8b8fa8;
+  --color-text-faint:    #515570;
+  --color-text-inverse:  #0e0f14;
+
+  /* Blurple accent */
+  --color-primary:       #5865f2;
+  --color-primary-hover: #4752c4;
+  --color-primary-active:#3c45a5;
+  --color-primary-glow:  rgba(88, 101, 242, 0.25);
+  --color-primary-subtle:rgba(88, 101, 242, 0.12);
+
+  --color-success:       #57f287;
+  --color-success-dim:   rgba(87, 242, 135, 0.12);
+  --color-warning:       #fee75c;
+  --color-warning-dim:   rgba(254, 231, 92, 0.12);
+  --color-error:         #ed4245;
+  --color-error-dim:     rgba(237, 66, 69, 0.12);
+  --color-info:          #5865f2;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 32px rgba(88, 101, 242, 0.15);
+}
+
+/* === BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--space-8);
+}
+body {
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+}
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+a { color: var(--color-primary); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--color-primary-hover); }
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+h1,h2,h3,h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* === LAYOUT === */
+.app-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+/* === HEADER === */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--color-primary), #8b9cf8);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-glow);
+}
+.site-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+}
+.site-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* === HERO === */
+.hero {
+  margin-bottom: var(--space-10);
+}
+.hero h1 {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  background: linear-gradient(135deg, #e4e5f0 30%, #8b9cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-3);
+}
+.hero p {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 56ch;
+}
+
+/* === WARNING BANNER === */
+.banner {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  border: 1px solid;
+}
+.banner.warning {
+  background: var(--color-warning-dim);
+  border-color: rgba(254, 231, 92, 0.25);
+  color: #e8d87a;
+}
+.banner.info {
+  background: var(--color-primary-subtle);
+  border-color: rgba(88, 101, 242, 0.25);
+  color: #a4acf8;
+}
+.banner-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* === STEPS === */
+.steps-nav {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+  scrollbar-width: none;
+}
+.steps-nav::-webkit-scrollbar { display: none; }
+
+.step-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.step-btn:hover { border-color: var(--color-border-bright); color: var(--color-text); }
+.step-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 0 16px var(--color-primary-glow);
+}
+.step-btn.completed {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: var(--color-success-dim);
+}
+.step-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.step-btn.completed .step-num { background: var(--color-success); color: #0e0f14; }
+
+/* === SECTION CARDS === */
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+.card-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.card-title .icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-subtle);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+.card-desc {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+  max-width: 60ch;
+}
+
+/* === OS SELECTOR === */
+.os-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.os-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--transition);
+}
+.os-btn:hover { border-color: var(--color-border-bright); color: var(--color-text); background: var(--color-surface-3); }
+.os-btn.selected {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  background: var(--color-primary-subtle);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+.os-icon { font-size: 2rem; }
+
+/* === SETUP TYPE === */
+.setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.setup-option {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-2);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+}
+.setup-option:hover { border-color: var(--color-border-bright); background: var(--color-surface-3); }
+.setup-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+.setup-option-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+.setup-option-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+.setup-badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+.badge-recommended { background: var(--color-success-dim); color: var(--color-success); }
+.badge-advanced { background: var(--color-warning-dim); color: var(--color-warning); }
+
+/* === COMMAND BLOCKS === */
+.cmd-block {
+  background: #0a0b10;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+.cmd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+}
+.cmd-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cmd-label .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-bright);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  transition: all var(--transition);
+}
+.copy-btn:hover { background: var(--color-primary-subtle); color: var(--color-primary); border-color: var(--color-primary); }
+.copy-btn.copied { background: var(--color-success-dim); color: var(--color-success); border-color: var(--color-success); }
+.cmd-body {
+  padding: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: #c5caf5;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+.cmd-comment { color: #515570; }
+.cmd-keyword { color: #89b4fa; }
+.cmd-string  { color: #a6e3a1; }
+.cmd-path    { color: #f9e2af; }
+.cmd-dollar  { color: var(--color-text-faint); user-select: none; }
+
+/* === PREREQ CHECKLIST === */
+.prereq-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.prereq-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.prereq-check {
+  width: 22px; height: 22px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border-bright);
+  background: var(--color-surface-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-top: 2px;
+}
+.prereq-check.checked {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+.prereq-check svg { display: none; }
+.prereq-check.checked svg { display: block; }
+.prereq-body { flex: 1; }
+.prereq-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.prereq-name .link-btn {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  border: 1px solid rgba(88,101,242,0.3);
+  background: var(--color-primary-subtle);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.prereq-name .link-btn:hover { background: var(--color-primary); color: white; }
+.prereq-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
+
+/* === PLUGIN INPUT === */
+.plugin-input-wrap {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.plugin-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-bright);
+  border-radius: var(--radius-lg);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  transition: border-color var(--transition);
+}
+.plugin-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+.plugin-input::placeholder { color: var(--color-text-faint); }
+.add-btn {
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.add-btn:hover { background: var(--color-primary-hover); }
+
+.plugins-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.plugin-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition);
+}
+.plugin-item:hover { border-color: var(--color-border-bright); }
+.plugin-icon {
+  width: 32px; height: 32px;
+  background: var(--color-primary-subtle);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.plugin-info { flex: 1; min-width: 0; }
+.plugin-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plugin-url {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.remove-btn {
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-text-faint);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+.remove-btn:hover { color: var(--color-error); background: var(--color-error-dim); }
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-10) var(--space-4);
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.empty-state .big-icon { font-size: 2rem; margin-bottom: var(--space-3); opacity: 0.5; }
+
+/* === INSTALL TYPE === */
+.install-tab-group {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-5);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
+  width: fit-content;
+}
+.install-tab {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  transition: all var(--transition);
+}
+.install-tab:hover { color: var(--color-text); }
+.install-tab.active { background: var(--color-primary); color: white; }
+
+/* === GENERATED COMMANDS === */
+.gen-section { margin-bottom: var(--space-5); }
+.gen-section-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.gen-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-divider);
+}
+
+/* === DIVIDER === */
+.divider {
+  height: 1px;
+  background: var(--color-divider);
+  margin: var(--space-5) 0;
+}
+
+/* === PROGRESS INDICATOR === */
+.progress-bar-wrap {
+  height: 3px;
+  background: var(--color-surface-3);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-8);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #a4acf8);
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* === NAVIGATION BUTTONS === */
+.nav-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-8);
+  gap: var(--space-4);
+}
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  transition: all var(--transition);
+}
+.btn-primary:hover { background: var(--color-primary-hover); box-shadow: 0 0 20px var(--color-primary-glow); }
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-bright);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+.btn-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* === SUCCESS PANEL === */
+.success-icon {
+  width: 64px; height: 64px;
+  background: var(--color-success-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto var(--space-5);
+  border: 2px solid var(--color-success);
+  font-size: 1.8rem;
+}
+.success-panel {
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+}
+.success-panel h2 {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+.success-panel p {
+  color: var(--color-text-muted);
+  max-width: 46ch;
+  margin: 0 auto var(--space-6);
+}
+
+/* === TAGS === */
+.tag {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  border: 1px solid rgba(88,101,242,0.25);
+}
+
+/* === ACCORDION === */
+.accordion { margin-bottom: var(--space-3); }
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+  transition: all var(--transition);
+}
+.accordion-trigger:hover { background: var(--color-surface-3); }
+.accordion-trigger[aria-expanded="true"] { border-radius: var(--radius-lg) var(--radius-lg) 0 0; border-bottom-color: transparent; }
+.accordion-arrow { transition: transform var(--transition); }
+.accordion-trigger[aria-expanded="true"] .accordion-arrow { transform: rotate(180deg); }
+.accordion-body {
+  display: none;
+  padding: var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.accordion-body.open { display: block; }
+.accordion-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: rgba(255,255,255,0.05);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+/* === INPUT VALIDATION === */
+.input-error {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  margin-top: var(--space-2);
+  display: none;
+}
+.input-error.show { display: block; }
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  padding: var(--space-12) 0 var(--space-8);
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  border-top: 1px solid var(--color-divider);
+  margin-top: var(--space-12);
+}
+footer a { color: var(--color-text-faint); }
+footer a:hover { color: var(--color-text-muted); }
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .app-container { padding: var(--space-5) var(--space-4); }
+  .os-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .setup-grid { grid-template-columns: 1fr; }
+  .plugin-input-wrap { flex-direction: column; }
+  .add-btn { width: 100%; justify-content: center; }
+  .nav-btns { flex-direction: column-reverse; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-mark">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-label="Vencord Plugin Installer">
+        <rect x="3" y="3" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+        <rect x="14" y="3" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+        <rect x="3" y="14" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+        <path d="M14 19.5 L19.5 14 L25 19.5 L19.5 25 Z" fill="white" opacity="0.9"/>
+      </svg>
+    </div>
+    <div>
+      <div class="site-title">Vencord Plugin Installer</div>
+      <div class="site-subtitle">Step-by-step custom plugin setup guide</div>
+    </div>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width: 20%"></div>
+  </div>
+
+  <!-- STEP NAV -->
+  <nav class="steps-nav" aria-label="Setup steps">
+    <button class="step-btn active" data-step="0" onclick="goToStep(0)">
+      <span class="step-num">1</span> Setup
+    </button>
+    <button class="step-btn" data-step="1" onclick="goToStep(1)">
+      <span class="step-num">2</span> Prerequisites
+    </button>
+    <button class="step-btn" data-step="2" onclick="goToStep(2)">
+      <span class="step-num">3</span> Install Vencord
+    </button>
+    <button class="step-btn" data-step="3" onclick="goToStep(3)">
+      <span class="step-num">4</span> Add Plugins
+    </button>
+    <button class="step-btn" data-step="4" onclick="goToStep(4)">
+      <span class="step-num">5</span> Build &amp; Inject
+    </button>
+  </nav>
+
+  <!-- SECURITY WARNING -->
+  <div class="banner warning">
+    <span class="banner-icon">⚠️</span>
+    <div>
+      <strong>Only install plugins you trust.</strong> Custom plugins run code inside Discord. Always review a plugin's source code on GitHub before installing, especially from unknown authors.
+    </div>
+  </div>
+
+  <!-- ============ STEP 0: SETUP ============ -->
+  <div class="step-panel active" id="step-0">
+    <div class="hero">
+      <h1>Let's get you set up</h1>
+      <p>Answer two quick questions and we'll generate the exact commands you need — no guesswork required.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">💻</div>
+        What's your operating system?
+      </div>
+      <p class="card-desc">This determines which commands we'll generate for you.</p>
+      <div class="os-grid">
+        <button class="os-btn selected" id="os-windows" onclick="selectOS('windows')">
+          <span class="os-icon">🪟</span>
+          Windows
+        </button>
+        <button class="os-btn" id="os-mac" onclick="selectOS('mac')">
+          <span class="os-icon">🍎</span>
+          macOS
+        </button>
+        <button class="os-btn" id="os-linux" onclick="selectOS('linux')">
+          <span class="os-icon">🐧</span>
+          Linux
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">🎮</div>
+        How do you run Discord?
+      </div>
+      <p class="card-desc">Choose the Discord client you use day-to-day.</p>
+      <div class="setup-grid">
+        <button class="setup-option selected" id="client-discord" onclick="selectClient('discord')">
+          <span class="setup-badge badge-recommended">Recommended</span>
+          <div class="setup-option-title">Discord Desktop</div>
+          <div class="setup-option-desc">The official Discord app downloaded from discord.com — the most common setup.</div>
+        </button>
+        <button class="setup-option" id="client-vesktop" onclick="selectClient('vesktop')">
+          <span class="setup-badge badge-advanced">Alternate Client</span>
+          <div class="setup-option-title">Vesktop</div>
+          <div class="setup-option-desc">Open-source Discord client by Vencord's author. Uses a different inject method.</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <div></div>
+      <button class="btn-primary" onclick="goToStep(1)">
+        Continue
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 1: PREREQUISITES ============ -->
+  <div class="step-panel" id="step-1">
+    <div class="hero">
+      <h1>Install prerequisites</h1>
+      <p>Before building Vencord you need three tools. Check each one off after installing it.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">📦</div>
+        Required tools
+      </div>
+      <p class="card-desc">All three are free and widely trusted. Click the download link next to each one.</p>
+
+      <ul class="prereq-list" id="prereqList">
+        <li class="prereq-item">
+          <div class="prereq-check" onclick="toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')toggleCheck(this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0e0f14" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="prereq-body">
+            <div class="prereq-name">
+              Node.js (LTS)
+              <a href="https://nodejs.org/en/download" target="_blank" rel="noopener" class="link-btn">Download ↗</a>
+            </div>
+            <div class="prereq-desc">JavaScript runtime. Download the LTS version. Verify install: <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">node -v</code></div>
+          </div>
+        </li>
+        <li class="prereq-item">
+          <div class="prereq-check" onclick="toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')toggleCheck(this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0e0f14" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="prereq-body">
+            <div class="prereq-name">
+              Git
+              <a href="https://git-scm.com/downloads" target="_blank" rel="noopener" class="link-btn">Download ↗</a>
+            </div>
+            <div class="prereq-desc">Version control tool. Required to clone Vencord and plugins from GitHub. Verify: <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">git -v</code></div>
+          </div>
+        </li>
+        <li class="prereq-item">
+          <div class="prereq-check" onclick="toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')toggleCheck(this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0e0f14" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="prereq-body">
+            <div class="prereq-name">
+              pnpm
+              <span class="tag" style="cursor:default">installed via command</span>
+            </div>
+            <div class="prereq-desc">Fast Node.js package manager used by Vencord. Run the command below after installing Node.js.</div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="cmd-block">
+        <div class="cmd-header">
+          <span class="cmd-label"><span class="dot"></span>Install pnpm</span>
+          <button class="copy-btn" onclick="copyCmd(this, 'npm install -g pnpm')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="cmd-body"><span class="cmd-dollar">$ </span>npm install -g pnpm</div>
+      </div>
+
+      <div class="banner info" style="margin-top:0;margin-bottom:0">
+        <span class="banner-icon">ℹ️</span>
+        <div>Make sure all three tools are added to your <strong>PATH</strong> after installing. The installers usually do this automatically — just restart your terminal afterwards.</div>
+      </div>
+    </div>
+
+    <!-- Windows PATH note -->
+    <div class="accordion" id="winPathNote" style="display:none">
+      <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+        🪟 Windows: Making sure tools are on PATH
+        <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        During the Node.js and Git installers on Windows, make sure you check the option <strong>"Add to PATH"</strong> (it's checked by default). After installing, open a <em>new</em> PowerShell or Command Prompt window before running any commands. If <code>node -v</code> or <code>git -v</code> still fails, restart your computer.
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-secondary" onclick="goToStep(0)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-primary" onclick="goToStep(2)">
+        All installed, continue
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 2: INSTALL VENCORD ============ -->
+  <div class="step-panel" id="step-2">
+    <div class="hero">
+      <h1>Clone &amp; set up Vencord</h1>
+      <p>Run these commands in your terminal to download Vencord's source code and install its dependencies.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">📂</div>
+        Where to run these commands
+      </div>
+      <p class="card-desc" id="terminalHint">Open a terminal (PowerShell on Windows, Terminal on macOS/Linux) and navigate to a folder you can remember — like your Documents folder.</p>
+
+      <div id="cloneCommands"></div>
+
+      <div class="banner info">
+        <span class="banner-icon">💡</span>
+        <div>If you already cloned Vencord before, just <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">cd</code> into your existing Vencord folder and run <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">git pull</code> to update it, then continue below.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-secondary" onclick="goToStep(1)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-primary" onclick="goToStep(3)">
+        Done, add plugins
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 3: ADD PLUGINS ============ -->
+  <div class="step-panel" id="step-3">
+    <div class="hero">
+      <h1>Add your plugins</h1>
+      <p>Paste GitHub URLs for the plugins you want to install. We'll generate the exact commands to add them.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">🔌</div>
+        Plugin GitHub URLs
+      </div>
+      <p class="card-desc">Enter the GitHub URL for each plugin you want. Each plugin should be a repo containing an <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">index.ts</code> or <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">index.tsx</code> file.</p>
+
+      <div class="plugin-input-wrap">
+        <input
+          type="text"
+          class="plugin-input"
+          id="pluginUrlInput"
+          placeholder="https://github.com/user/vc-somePlugin"
+          aria-label="Plugin GitHub URL"
+          onkeydown="if(event.key==='Enter')addPlugin()"
+        >
+        <button class="add-btn" onclick="addPlugin()">
+          + Add
+        </button>
+      </div>
+      <p class="input-error" id="inputError">Please enter a valid GitHub URL (e.g. https://github.com/user/repo)</p>
+
+      <ul class="plugins-list" id="pluginsList"></ul>
+      <div class="empty-state" id="emptyState">
+        <div class="big-icon">🧩</div>
+        No plugins added yet.<br>Paste a GitHub repo URL above to get started.
+      </div>
+    </div>
+
+    <div class="card" id="pluginSearchCard">
+      <div class="card-title">
+        <div class="icon">🔍</div>
+        Finding plugins
+      </div>
+      <p class="card-desc">Not sure where to find plugins? Here are some good starting points.</p>
+
+      <div class="accordion">
+        <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          Where to discover community plugins
+          <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>Great places to find Vencord userplugins:</p>
+          <ul style="list-style:disc;padding-left:1.2em;margin-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-2)">
+            <li><a href="https://github.com/topics/vencord-plugin" target="_blank" rel="noopener">github.com/topics/vencord-plugin</a> — Browse all repos tagged as Vencord plugins</li>
+            <li><a href="https://github.com/topics/vencord-userplugins" target="_blank" rel="noopener">github.com/topics/vencord-userplugins</a> — Repos tagged as userplugins specifically</li>
+            <li><a href="https://github.com/D3SOX/vencord-userplugins" target="_blank" rel="noopener">D3SOX/vencord-userplugins</a> — A popular collection of high-quality userplugins</li>
+            <li>Vencord's <a href="https://discord.gg/D9uwnFnqmd" target="_blank" rel="noopener">Discord server</a> — Often has plugin showcases and sharing</li>
+          </ul>
+          <p style="margin-top:var(--space-3);color:var(--color-warning)">⚠️ Always review the code before installing anything.</p>
+        </div>
+      </div>
+
+      <div class="accordion" style="margin-top:var(--space-3)">
+        <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          What does a valid plugin repo look like?
+          <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          A valid Vencord userplugin repo should contain either:
+          <ul style="list-style:disc;padding-left:1.2em;margin-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-2)">
+            <li>A single <code>index.ts</code> or <code>index.tsx</code> file at the root (simple plugins)</li>
+            <li>A folder structure with <code>index.ts</code>/<code>index.tsx</code> inside (complex plugins)</li>
+          </ul>
+          <p style="margin-top:var(--space-3)">The file should start with <code>definePlugin({...})</code> from Vencord's API.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-secondary" onclick="goToStep(2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-primary" onclick="goToStep(4)">
+        Generate commands
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 4: BUILD & INJECT ============ -->
+  <div class="step-panel" id="step-4">
+    <div class="hero">
+      <h1>Build &amp; inject Vencord</h1>
+      <p>Copy and run these commands in your terminal to install your plugins and apply them to Discord.</p>
+    </div>
+
+    <div class="card" id="buildCommandsCard">
+      <div class="card-title">
+        <div class="icon">⚙️</div>
+        Your personalised commands
+      </div>
+      <p class="card-desc">Run these in order inside your Vencord folder.</p>
+      <div id="buildCommands"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">✅</div>
+        After running the commands
+      </div>
+      <p class="card-desc" id="afterInjectText">Restart Discord — your custom plugins will appear in the Vencord plugins tab.</p>
+
+      <div class="accordion">
+        <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          How to verify your plugin is installed
+          <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <ol style="padding-left:1.2em;display:flex;flex-direction:column;gap:var(--space-3)">
+            <li>Open Discord and go to <strong>User Settings</strong></li>
+            <li>Find the <strong>Vencord</strong> section in the sidebar</li>
+            <li>Click on <strong>Plugins</strong></li>
+            <li>Scroll down or search for your plugin by name</li>
+            <li>Enable it using the toggle — some plugins may need a Discord restart</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="accordion" style="margin-top:var(--space-3)">
+        <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          Updating your plugins later
+          <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body" id="updateInstructions">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="accordion" style="margin-top:var(--space-3)">
+        <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          Build failed? Common fixes
+          <svg class="accordion-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <ul style="list-style:disc;padding-left:1.2em;display:flex;flex-direction:column;gap:var(--space-3)">
+            <li><strong>Cannot find package "xyz"</strong> — Run <code>pnpm install</code> again. Vencord may have added new dependencies.</li>
+            <li><strong>TypeScript errors</strong> — The plugin may be outdated and incompatible with the current Vencord version. Check the plugin's GitHub issues page.</li>
+            <li><strong>pnpm not found</strong> — Restart your terminal after installing pnpm, or try <code>npm install -g pnpm</code> again.</li>
+            <li><strong>Permission denied (Linux/macOS)</strong> — Try prefixing with <code>sudo</code>, or fix npm permissions per the Node.js docs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-secondary" onclick="goToStep(3)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-primary" onclick="goToStep(5)">
+        Mark as done 🎉
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 5: DONE ============ -->
+  <div class="step-panel" id="step-5">
+    <div class="card success-panel">
+      <div class="success-icon">🎉</div>
+      <h2>You're all set!</h2>
+      <p>Your custom plugins have been installed into Vencord. Open Discord and enable them in the Plugins settings tab.</p>
+      <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
+        <button class="btn-secondary" onclick="goToStep(0)">
+          Start over
+        </button>
+        <a href="https://docs.vencord.dev/plugins/" target="_blank" rel="noopener" class="btn-primary" style="text-decoration:none">
+          Learn to write plugins ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="app-container">
+    <p>Not affiliated with Vencord or Discord. Use at your own discretion.</p>
+    <p style="margin-top:var(--space-2)">
+      <a href="https://docs.vencord.dev/installing/custom-plugins/" target="_blank" rel="noopener">Official Vencord docs</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/Vendicated/Vencord" target="_blank" rel="noopener">Vencord on GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener">Created with Perplexity Computer</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ======== STATE ========
+let state = {
+  os: 'windows',
+  client: 'discord',
+  plugins: [],
+  currentStep: 0,
+};
+
+const TOTAL_STEPS = 5;
+
+// ======== OS DETECTION ========
+(function detectOS() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes('mac')) selectOS('mac');
+  else if (ua.includes('linux') && !ua.includes('android')) selectOS('linux');
+  else selectOS('windows');
+})();
+
+// ======== NAVIGATION ========
+function goToStep(n) {
+  if (n < 0 || n > TOTAL_STEPS) return;
+
+  // Save current step as completed
+  const prevBtn = document.querySelector(`.step-btn[data-step="${state.currentStep}"]`);
+  if (prevBtn && n > state.currentStep) {
+    prevBtn.classList.remove('active');
+    prevBtn.classList.add('completed');
+    const numEl = prevBtn.querySelector('.step-num');
+    if (numEl) numEl.innerHTML = '✓';
+  } else if (prevBtn) {
+    prevBtn.classList.remove('active');
+  }
+
+  // Hide all panels
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+
+  // Show target panel
+  const targetPanel = document.getElementById(`step-${n}`);
+  if (targetPanel) targetPanel.classList.add('active');
+
+  // Update nav button
+  const targetBtn = document.querySelector(`.step-btn[data-step="${n}"]`);
+  if (targetBtn) {
+    targetBtn.classList.remove('completed');
+    targetBtn.classList.add('active');
+  }
+
+  state.currentStep = n;
+
+  // Update progress bar (steps 0-4 shown; step 5 is done)
+  const pct = Math.min(((n + 1) / TOTAL_STEPS) * 100, 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  // Re-render dynamic sections
+  if (n === 2) renderCloneCommands();
+  if (n === 4) renderBuildCommands();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ======== OS SELECTION ========
+function selectOS(os) {
+  state.os = os;
+  ['windows','mac','linux'].forEach(o => {
+    document.getElementById(`os-${o}`)?.classList.toggle('selected', o === os);
+  });
+  // Show Windows PATH tip on prereqs step
+  const winNote = document.getElementById('winPathNote');
+  if (winNote) winNote.style.display = os === 'windows' ? 'block' : 'none';
+  // Update terminal hint
+  const hint = document.getElementById('terminalHint');
+  if (hint) {
+    if (os === 'windows') hint.textContent = 'Open PowerShell (Win + X → "Windows PowerShell") and navigate to a folder you\'d like Vencord to live in, such as your Documents folder.';
+    else if (os === 'mac') hint.textContent = 'Open Terminal (Cmd + Space, type "Terminal") and navigate to a folder you\'d like Vencord to live in, such as ~/Documents.';
+    else hint.textContent = 'Open a terminal emulator and navigate to a folder you\'d like Vencord to live in, such as ~/Documents.';
+  }
+  // Re-render if already on that step
+  if (state.currentStep === 2) renderCloneCommands();
+  if (state.currentStep === 4) renderBuildCommands();
+}
+
+// ======== CLIENT SELECTION ========
+function selectClient(client) {
+  state.client = client;
+  ['discord','vesktop'].forEach(c => {
+    document.getElementById(`client-${c}`)?.classList.toggle('selected', c === client);
+  });
+  if (state.currentStep === 4) renderBuildCommands();
+}
+
+// ======== PREREQ CHECKBOX ========
+function toggleCheck(el) {
+  const checked = el.classList.toggle('checked');
+  el.setAttribute('aria-checked', String(checked));
+}
+
+// ======== ACCORDION ========
+function toggleAccordion(btn) {
+  const expanded = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!expanded));
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open', !expanded);
+}
+
+// ======== PLUGIN MANAGEMENT ========
+function extractRepoName(url) {
+  try {
+    const u = new URL(url.trim());
+    const parts = u.pathname.replace(/^\//, '').replace(/\/$/, '').split('/');
+    if (parts.length >= 2) return parts[1];
+    return parts[0] || url;
+  } catch {
+    const parts = url.split('/');
+    return parts[parts.length - 1] || url;
+  }
+}
+
+function isValidGithubUrl(url) {
+  try {
+    const u = new URL(url.trim());
+    return (u.hostname === 'github.com' && u.pathname.replace(/^\//, '').split('/').length >= 2);
+  } catch { return false; }
+}
+
+function addPlugin() {
+  const input = document.getElementById('pluginUrlInput');
+  const errEl = document.getElementById('inputError');
+  const url = input.value.trim();
+
+  if (!url) return;
+
+  if (!isValidGithubUrl(url)) {
+    errEl.classList.add('show');
+    input.style.borderColor = 'var(--color-error)';
+    return;
+  }
+
+  errEl.classList.remove('show');
+  input.style.borderColor = '';
+
+  // Prevent dupes
+  if (state.plugins.find(p => p.url === url)) {
+    input.value = '';
+    return;
+  }
+
+  const name = extractRepoName(url);
+  state.plugins.push({ url, name });
+  input.value = '';
+  renderPluginList();
+}
+
+function removePlugin(idx) {
+  state.plugins.splice(idx, 1);
+  renderPluginList();
+}
+
+function renderPluginList() {
+  const list = document.getElementById('pluginsList');
+  const empty = document.getElementById('emptyState');
+  list.innerHTML = '';
+
+  if (state.plugins.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  state.plugins.forEach((p, i) => {
+    const li = document.createElement('li');
+    li.className = 'plugin-item';
+    li.innerHTML = `
+      <div class="plugin-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div class="plugin-info">
+        <div class="plugin-name">${escHtml(p.name)}</div>
+        <div class="plugin-url">${escHtml(p.url)}</div>
+      </div>
+      <button class="remove-btn" onclick="removePlugin(${i})" aria-label="Remove ${escHtml(p.name)}">✕</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ======== COMMAND RENDERING ========
+
+function getCdCmd(path) {
+  if (state.os === 'windows') return `cd Documents\\Vencord`;
+  return `cd ~/Documents/Vencord`;
+}
+
+function renderCloneCommands() {
+  const wrap = document.getElementById('cloneCommands');
+  if (!wrap) return;
+
+  const cdToDocuments = state.os === 'windows'
+    ? `cd $HOME\\Documents`
+    : `cd ~/Documents`;
+
+  wrap.innerHTML = `
+    <div class="gen-section">
+      <div class="gen-section-title">1 · Navigate to a folder</div>
+      ${cmdBlock('Navigate to Documents', cdToDocuments)}
+    </div>
+    <div class="gen-section">
+      <div class="gen-section-title">2 · Clone the Vencord repo</div>
+      ${cmdBlock('Clone Vencord from GitHub', 'git clone https://github.com/Vendicated/Vencord\ncd Vencord')}
+    </div>
+    <div class="gen-section">
+      <div class="gen-section-title">3 · Install dependencies</div>
+      ${cmdBlock('Install dependencies with pnpm', 'pnpm install')}
+    </div>
+  `;
+}
+
+function renderBuildCommands() {
+  const wrap = document.getElementById('buildCommands');
+  if (!wrap) return;
+
+  let sections = [];
+
+  // 1. Create userplugins folder
+  const mkdirCmd = state.os === 'windows'
+    ? `mkdir src\\userplugins`
+    : `mkdir -p src/userplugins`;
+
+  sections.push(`
+    <div class="gen-section">
+      <div class="gen-section-title">1 · Create the userplugins folder</div>
+      ${cmdBlock('Create userplugins folder (one-time)', mkdirCmd)}
+    </div>
+  `);
+
+  // 2. Clone plugins
+  if (state.plugins.length > 0) {
+    const cdCmd = state.os === 'windows' ? `cd src\\userplugins` : `cd src/userplugins`;
+    let pluginCmds = cdCmd + '\n\n';
+
+    state.plugins.forEach((p, i) => {
+      if (i > 0) pluginCmds += '\n';
+      pluginCmds += `# ${p.name}\ngit clone ${p.url}`;
+    });
+
+    const backCmd = state.os === 'windows' ? `\n\ncd ..\\..\n` : `\n\ncd ../..`;
+    pluginCmds += backCmd;
+
+    sections.push(`
+      <div class="gen-section">
+        <div class="gen-section-title">2 · Clone your plugins</div>
+        ${cmdBlock('Clone plugins into userplugins', pluginCmds)}
+      </div>
+    `);
+  } else {
+    // manual instructions
+    const pathExample = state.os === 'windows' ? `src\\userplugins\\myPlugin.ts` : `src/userplugins/myPlugin.ts`;
+    sections.push(`
+      <div class="gen-section">
+        <div class="gen-section-title">2 · Add your plugin files</div>
+        <div class="banner info" style="margin-bottom:0">
+          <span class="banner-icon">ℹ️</span>
+          <div>You didn't add any plugins in the previous step. Manually copy your plugin <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">.ts</code> or <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">.tsx</code> files into <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">${pathExample}</code> before building.</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // 3. Build
+  sections.push(`
+    <div class="gen-section">
+      <div class="gen-section-title">3 · Build Vencord</div>
+      ${cmdBlock('Compile Vencord with your plugins', 'pnpm build')}
+    </div>
+  `);
+
+  // 4. Inject
+  let injectSection = '';
+  if (state.client === 'vesktop') {
+    injectSection = `
+      <div class="gen-section">
+        <div class="gen-section-title">4 · Point Vesktop to your build</div>
+        <div class="banner info" style="margin-bottom:0">
+          <span class="banner-icon">📁</span>
+          <div>
+            <strong>Vesktop doesn't use pnpm inject.</strong> Instead:
+            <ol style="padding-left:1.2em;margin-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-2)">
+              <li>Open Vesktop and go to <strong>Vesktop Settings</strong></li>
+              <li>Scroll to the <strong>Vencord Location</strong> section</li>
+              <li>Press <strong>Change</strong> and navigate to the <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px">dist</code> folder inside your Vencord directory</li>
+              <li>Fully restart Vesktop</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    injectSection = `
+      <div class="gen-section">
+        <div class="gen-section-title">4 · Inject into Discord</div>
+        ${cmdBlock('Run the Vencord installer to patch Discord', 'pnpm inject')}
+        <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-2)">The installer will launch and let you select your Discord installation. Choose the one you normally use, then restart Discord.</p>
+      </div>
+    `;
+  }
+
+  sections.push(injectSection);
+
+  wrap.innerHTML = sections.join('');
+
+  // Update after-inject text
+  const afterText = document.getElementById('afterInjectText');
+  if (afterText) {
+    if (state.client === 'vesktop') {
+      afterText.textContent = 'After restarting Vesktop, your plugins will appear in the Vencord plugins tab in settings.';
+    } else {
+      afterText.textContent = 'After the inject finishes and you restart Discord, your custom plugins will appear in the Vencord plugins tab in settings.';
+    }
+  }
+
+  // Fill update instructions
+  const updateEl = document.getElementById('updateInstructions');
+  if (updateEl) {
+    const pluginUpdateCmds = state.plugins.length > 0
+      ? state.plugins.map(p => {
+          const pluginDir = state.os === 'windows'
+            ? `src\\userplugins\\${p.name}`
+            : `src/userplugins/${p.name}`;
+          return `# Update ${p.name}\ncd ${pluginDir}\ngit pull\n${state.os === 'windows' ? 'cd ..\\..' : 'cd ../..'}\n`;
+        }).join('\n')
+      : null;
+
+    const vencordUpdate = `# Update Vencord itself\ngit pull\npnpm install\npnpm build${state.client === 'discord' ? '\npnpm inject' : ''}`;
+
+    updateEl.innerHTML = `
+      <p style="margin-bottom:var(--space-3)">To update Vencord and your plugins, navigate to your Vencord folder and run:</p>
+      ${pluginUpdateCmds ? cmdBlock('Update plugins', pluginUpdateCmds) : ''}
+      ${cmdBlock('Update Vencord and rebuild', vencordUpdate)}
+    `;
+  }
+}
+
+// ======== COMMAND BLOCK HELPER ========
+function cmdBlock(label, content) {
+  const id = 'cmd_' + Math.random().toString(36).substr(2,8);
+  const escaped = escHtml(content);
+  // colorize: lines starting with # → comment, git/pnpm/mkdir/cd → highlight
+  const colorized = escaped.split('\n').map(line => {
+    if (line.startsWith('#')) return `<span class="cmd-comment">${line}</span>`;
+    if (line.startsWith('$ ')) return `<span class="cmd-dollar">$ </span>${line.slice(2)}`;
+    // keywords
+    return line
+      .replace(/^(git|pnpm|npm|mkdir|cd|sudo)(\s)/g, '<span class="cmd-keyword">$1</span>$2')
+      .replace(/(https:\/\/github\.com\/[^\s]+)/g, '<span class="cmd-string">$1</span>');
+  }).join('\n');
+
+  const rawForCopy = content;
+
+  return `
+    <div class="cmd-block">
+      <div class="cmd-header">
+        <span class="cmd-label"><span class="dot"></span>${escHtml(label)}</span>
+        <button class="copy-btn" onclick="copyRaw(this, ${JSON.stringify(rawForCopy)})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="cmd-body">${colorized}</div>
+    </div>
+  `;
+}
+
+// ======== COPY BUTTONS ========
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
+    }, 2000);
+  });
+}
+
+function copyRaw(btn, text) {
+  // Strip HTML comments and clean
+  const clean = text.replace(/<[^>]+>/g, '');
+  copyCmd(btn, text);
+}
+
+// ======== INITIAL RENDER ========
+renderPluginList();
+</script>
+
+</body>
+</html>

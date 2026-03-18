@@ -347,7 +347,6 @@ import {
     Toasts,
     FluxDispatcher,
     NavigationRouter,
-    ModalAPI,
     Forms,           // Discord's form components
     Button,
     TextInput,
@@ -355,6 +354,8 @@ import {
     Menu,            // Context menu components
 } from "@webpack/common";
 ```
+
+> **Note:** Modal utilities (`openModal`, `closeModal`, `ModalRoot`, etc.) are **not** in `@webpack/common`. Import them from `@utils/modal` instead (see section 11).
 
 ### Finding modules manually
 
@@ -765,7 +766,7 @@ Recommended starting points:
 - **`showHiddenChannels`** — Patching permission checks
 - **`viewRaw`** — Context menu injection + modal usage
 - **`messageLogger`** — Flux events, local storage, UI injection
-- **`pronounDB`** — Fetching external APIs, injecting into user profiles
+- **`userMessagesPronouns`** — Fetching external APIs, injecting into user profiles
 - **`fakeNitro`** — Complex multi-patch plugin with settings
 
 ### Equicord official plugins

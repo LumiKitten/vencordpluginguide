@@ -25,9 +25,8 @@
 13. [Native (Node.js) Code](#13-native-nodejs-code)
 14. [Lifecycle Hooks](#14-lifecycle-hooks)
 15. [Build & Test Workflow](#15-build--test-workflow)
-16. [Submission Checklist](#16-submission-checklist)
-17. [Common Mistakes](#17-common-mistakes)
-18. [Real-World Examples to Study](#18-real-world-examples-to-study)
+16. [Common Mistakes](#16-common-mistakes)
+17. [Real-World Examples to Study](#17-real-world-examples-to-study)
 
 ---
 
@@ -87,11 +86,11 @@ pnpm build
 
 ### Which folder to use?
 
-| Folder | Client | Use when |
-|---|---|---|
-| `src/plugins/` | Vencord | You intend to submit the plugin to official Vencord |
-| `src/equicordplugins/` | Equicord | You intend to submit the plugin to official Equicord |
-| `src/userplugins/` | Both | Personal use, prototyping, not submitting |
+| Folder | Client |
+|---|---|
+| `src/plugins/` | Vencord |
+| `src/equicordplugins/` | Equicord |
+| `src/userplugins/` | Both |
 
 > **When in doubt, use `src/userplugins/`.** It is not tracked by git and is the safest place to experiment.
 
@@ -139,9 +138,9 @@ Runs in **Node.js** (the Electron main process). Use this when you need filesyst
 - **No** browser APIs
 - Functions here are called from `index.ts` via `VencordNative.pluginHelpers.YourPluginName`
 
-### `README.md` (recommended for official plugins)
+### `README.md` (optional)
 
-Markdown documentation. Used to generate the plugin's page at `https://vencord.dev/plugins/YourPlugin`. Should include:
+Markdown documentation for your plugin. Should include:
 - What the plugin does
 - How to use it (any keybinds, settings, etc.)
 - Screenshots, GIFs, or videos showing it in action
@@ -150,7 +149,7 @@ Markdown documentation. Used to generate the plugin's page at `https://vencord.d
 
 ## 6. Plugin Boilerplate
 
-### User plugin (userplugins — no dev registration needed)
+### User plugin (userplugins)
 
 ```ts
 // src/userplugins/myPlugin/index.ts
@@ -172,7 +171,7 @@ export default definePlugin({
 
 > `id` is your **Discord user ID** (snowflake). It must be a `BigInt`, so append `n` to the number literal.
 
-### Official Vencord plugin (src/plugins)
+### Vencord plugin (src/plugins)
 
 First, add yourself to `src/utils/constants.ts` in the `Devs` object:
 
@@ -207,7 +206,7 @@ export default definePlugin({
 
 > VSCode snippet: type `vcPlugin` in an empty `index.ts` and accept the "Define Plugin" suggestion.
 
-### Official Equicord plugin (src/equicordplugins)
+### Equicord plugin (src/equicordplugins)
 
 First, add yourself to `src/utils/constants.ts` in the `EquicordDevs` object:
 
@@ -735,25 +734,7 @@ If you see this, your `find:` string or `match:` regex didn't match anything in 
 
 ---
 
-## 16. Submission Checklist
-
-Before submitting a plugin to Vencord or Equicord:
-
-- [ ] Plugin is in `src/plugins/` (Vencord) or `src/equicordplugins/` (Equicord)
-- [ ] Folder name is camelCase
-- [ ] Entry file is named `index.ts` or `index.tsx`
-- [ ] Author entry exists in `Devs` / `EquicordDevs` in `src/utils/constants.ts`
-- [ ] License header is present at the top of all source files
-- [ ] `README.md` is present with description and screenshots/GIFs
-- [ ] Plugin builds without errors (`pnpm build`)
-- [ ] Plugin does not break other plugins or base functionality
-- [ ] Settings (if any) are properly typed with sensible defaults
-- [ ] `stop()` cleans up everything `start()` created
-- [ ] No `console.log` left in production code paths (use `Logger` from `@utils/Logger`)
-
----
-
-## 17. Common Mistakes
+## 16. Common Mistakes
 
 | Mistake | Result | Fix |
 |---|---|---|
@@ -770,7 +751,7 @@ Before submitting a plugin to Vencord or Equicord:
 
 ---
 
-## 18. Real-World Examples to Study
+## 17. Real-World Examples to Study
 
 Reading existing plugins is the single best way to learn patterns.
 

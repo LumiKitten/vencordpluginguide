@@ -737,7 +737,7 @@ If you see this, your `find:` string or `match:` regex didn't match anything in 
 
 ## 16. Submission Checklist
 
-Before submitting a PR to Vencord or Equicord:
+Before submitting a plugin to Vencord or Equicord:
 
 - [ ] Plugin is in `src/plugins/` (Vencord) or `src/equicordplugins/` (Equicord)
 - [ ] Folder name is camelCase
@@ -750,7 +750,6 @@ Before submitting a PR to Vencord or Equicord:
 - [ ] Settings (if any) are properly typed with sensible defaults
 - [ ] `stop()` cleans up everything `start()` created
 - [ ] No `console.log` left in production code paths (use `Logger` from `@utils/Logger`)
-- [ ] PR title and description clearly explain what the plugin does
 
 ---
 
